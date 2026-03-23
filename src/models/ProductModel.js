@@ -8,25 +8,25 @@ const productSchema = new mongoose.Schema({
     },
     brand: {
         type: String,
-        required: [true, 'Brand is required'],
+        default: 'Unknown',
         trim: true,
     },
     name: {
         type: String,
-        required: [true, 'Product name is required'],
+        default: 'Unnamed Product',
         trim: true,
     },
     description: {
         type: String,
-        required: [true, 'Description is required'],
+        default: 'No description provided',
     },
     price: {
         type: Number,
-        required: [true, 'Price is required'],
+        default: 0,
     },
     image: {
         type: String, // main/thumbnail image
-        required: [true, 'Image URL is required'],
+        default: 'https://placehold.co/400x400',
     },
     images: {
         type: [String], // array of image urls
@@ -44,10 +44,30 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: 'Not specified',
     },
-    stock: {
-        type: Number,
-        required: [true, 'Stock quantity is required'],
-        default: 10,
+    battery_type: {
+        type: String,
+        default: 'Not specified',
+    },
+    ah: {
+        type: String,
+        default: 'Not specified',
+    },
+    cca: {
+        type: String,
+        default: 'Not specified',
+    },
+    dimensions: {
+        type: String,
+        default: 'Not specified',
+    },
+    part_number: {
+        type: String,
+        default: 'Not specified',
+    },
+    stock_status: {
+        type: String,
+        default: 'In Stock',
+        enum: ['In Stock', 'Out of Stock'],
     },
     is_favorite: {
         type: Boolean,
@@ -59,7 +79,7 @@ const productSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        required: [true, 'Category type is required'],
+        default: 'battery',
         trim: true,
     },
     createdAt: {

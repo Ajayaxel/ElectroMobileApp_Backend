@@ -5,7 +5,6 @@ const User = require('../models/userModel');
 
 const getHomeData = async (req, res) => {
     try {
-        const categories = await categoryService.getAllCategories();
         const products = await productService.getAllProducts();
         const orders = await Order.find();
         const totalCustomers = await User.countDocuments({ role: 'user' });
@@ -14,15 +13,21 @@ const getHomeData = async (req, res) => {
         const pendingOrders = orders.filter(o => o.status === 'Pending').length;
         const totalRevenue = orders.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
 
-        // Group products into sections based on category types
-        const sections = categories.map(category => {
-            const items = products.filter(product => product.type === category.type);
-            return {
-                title: `Popular ${category.name} Batteries`,
-                type: category.type,
-                items: items
-            };
-        });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const totalItems = products.length;
+        const paginatedProducts = products.slice(skip, skip + limit);
+
+        // Simple section containing all products (no longer category-based)
+        const sections = [
+            {
+                title: "Popular Batteries",
+                type: "battery",
+                items: paginatedProducts
+            }
+        ];
 
         const totalCarted = products.reduce((sum, p) => sum + (p.in_cart_count || 0), 0);
 
@@ -30,13 +35,18 @@ const getHomeData = async (req, res) => {
             status: true,
             message: "Home data fetched successfully",
             data: {
-                categories: categories,
                 sections: sections,
                 total_carted: totalCarted,
                 total_customers: totalCustomers,
                 total_orders: totalOrders,
                 pending_orders: pendingOrders,
-                total_revenue: totalRevenue
+                total_revenue: totalRevenue,
+                pagination: {
+                    total: totalItems,
+                    page: page,
+                    limit: limit,
+                    pages: Math.ceil(totalItems / limit)
+                }
             }
         });
     } catch (error) {

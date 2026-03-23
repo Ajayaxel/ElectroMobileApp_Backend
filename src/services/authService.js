@@ -61,7 +61,65 @@ const loginUser = async (email, password) => {
     }
 };
 
+const updateUserProfile = async (userId, updateData) => {
+    const { name, email, phone, current_password, new_password, profileImage } = updateData;
+
+    // Find user by MongoDB _id (which is in userId)
+    const user = await User.findById(userId).select('+password');
+
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    // Verify current password
+    if (!current_password) {
+        throw new Error('Current password is required to update profile');
+    }
+
+    const isMatch = await user.matchPassword(current_password);
+    if (!isMatch) {
+        throw new Error('Incorrect current password');
+    }
+
+    // Update fields
+    if (name) user.name = name;
+    if (email) {
+        const emailTaken = await User.findOne({ email, _id: { $ne: userId } });
+        if (emailTaken) throw new Error('Email already in use');
+        user.email = email;
+    }
+    if (phone) {
+        const phoneTaken = await User.findOne({ phone, _id: { $ne: userId } });
+        if (phoneTaken) throw new Error('Phone number already in use');
+        user.phone = phone;
+    }
+    if (new_password) user.password = new_password;
+    if (profileImage !== undefined) user.profileImage = profileImage;
+
+    await user.save();
+
+    return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        profileImage: user.profileImage,
+        token: signToken(user._id),
+    };
+};
+
+const deleteUserAccount = async (userId) => {
+    const user = await User.findByIdAndDelete(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return { message: 'User account deleted successfully' };
+};
+
 module.exports = {
     registerUser,
     loginUser,
+    updateUserProfile,
+    deleteUserAccount,
 };

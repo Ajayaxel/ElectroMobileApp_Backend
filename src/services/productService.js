@@ -1,7 +1,15 @@
 const Product = require('../models/ProductModel');
 
-const getAllProducts = async () => {
-    return await Product.find().select('-__v -_id');
+const getAllProducts = async (page = 1, limit = 10) => {
+    const skip = (page - 1) * limit;
+    return await Product.find()
+        .skip(skip)
+        .limit(limit)
+        .select('-__v -_id');
+};
+
+const countProducts = async () => {
+    return await Product.countDocuments();
 };
 
 const getProductsByType = async (type) => {
@@ -17,6 +25,18 @@ const createProduct = async (productData) => {
     return await product.save();
 };
 
+const bulkCreateProducts = async (productsData) => {
+    // Insert many products. Pre hooks might not run for insertMany,
+    // so we need to handle sequential IDs or save them one by one.
+    // For safety with pre 'save' hooks, we map and save them concurrently.
+    const savedProducts = [];
+    for (const productData of productsData) {
+        const product = new Product(productData);
+        savedProducts.push(await product.save());
+    }
+    return savedProducts;
+};
+
 const updateProduct = async (id, updateData) => {
     return await Product.findOneAndUpdate({ id }, updateData, { new: true, runValidators: true }).select('-__v -_id');
 };
@@ -27,9 +47,11 @@ const deleteProduct = async (id) => {
 
 module.exports = {
     getAllProducts,
+    countProducts,
     getProductsByType,
     getProductById,
     createProduct,
+    bulkCreateProducts,
     updateProduct,
     deleteProduct,
 };

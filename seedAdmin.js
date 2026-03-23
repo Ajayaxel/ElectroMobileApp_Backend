@@ -12,25 +12,21 @@ const seedAdmin = async () => {
         let admin = await User.findOne({ email: adminEmail });
         
         if (admin) {
-            console.log(`Admin user with email ${adminEmail} already exists!`);
-            // Just ensure they are marked as admin role (belt and suspenders)
-            if (admin.role !== 'admin') {
-                admin.role = 'admin';
-                await admin.save();
-                console.log('Updated existing user role to admin.');
-            }
+            console.log(`Admin user with email ${adminEmail} already exists! Updating...`);
+            admin.role = 'admin';
+            admin.password = '12345678';
+            await admin.save();
+            console.log('Admin user updated successfully!');
         } else {
             // Create new admin
             admin = await User.create({
                 name: 'Super Admin',
                 email: adminEmail,
                 phone: '99' + Math.floor(10000000 + Math.random() * 90000000).toString(), // Random 10-digit phone
-                password: '12345678', // from prompt: password 12345678
+                password: '12345678',
                 role: 'admin'
             });
             console.log(`Admin user seeded successfully!`);
-            console.log(`Email: ${admin.email}`);
-            console.log(`Role: ${admin.role}`);
         }
 
         process.exit();

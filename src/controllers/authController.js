@@ -85,15 +85,49 @@ const adminLogin = async (req, res) => {
 // @access  Private
 const getProfile = async (req, res) => {
     try {
-        const { id, name, email, phone } = req.user;
+        const { id, name, email, phone, profileImage } = req.user;
         res.status(200).json({
             id,
             name,
             email,
-            phone
+            phone,
+            profileImage
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update user profile
+// @route   PUT /api/auth/profile
+// @access  Private
+const updateProfile = async (req, res) => {
+    try {
+        let profileImage;
+        if (req.file) {
+            const host = req.get('host');
+            const protocol = req.protocol;
+            profileImage = `${protocol}://${host}/uploads/${req.file.filename}`;
+        }
+
+        const updateData = {
+            ...req.body,
+            profileImage
+        };
+
+        const result = await authService.updateUserProfile(req.user._id, updateData);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+const deleteAccount = async (req, res) => {
+    try {
+        await authService.deleteUserAccount(req.user._id);
+        res.status(200).json({ status: true, message: 'Account deleted successfully' });
+    } catch (error) {
+        res.status(400).json({ status: false, message: error.message });
     }
 };
 
@@ -102,4 +136,6 @@ module.exports = {
     login,
     adminLogin,
     getProfile,
+    updateProfile,
+    deleteAccount,
 };

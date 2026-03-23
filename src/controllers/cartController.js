@@ -6,8 +6,11 @@ const Product = require('../models/ProductModel');
 // @access  Private
 const addItemToCart = async (req, res) => {
     try {
-        const { product_id, quantity } = req.body;
+        const product_id = req.body?.product_id || req.query?.product_id;
+        const quantity = req.body?.quantity !== undefined ? req.body.quantity : req.query?.quantity;
         const userId = req.user._id;
+
+        console.log(`Add to cart request: product_id=${product_id}, quantity=${quantity}`);
 
         // Validation
         if (!product_id || quantity === undefined) {
@@ -25,7 +28,7 @@ const addItemToCart = async (req, res) => {
         }
 
         // Check stock
-        if (product.stock < quantity) {
+        if (product.stock_status === 'Out of Stock') {
             return res.status(409).json({ status: false, message: 'Out-of-stock' });
         }
 
@@ -37,8 +40,8 @@ const addItemToCart = async (req, res) => {
 
             if (itemIndex > -1) {
                 // Update quantity (Add to existing)
-                if (product.stock < cart.items[itemIndex].quantity + quantity) {
-                    return res.status(409).json({ status: false, message: 'Out-of-stock for this quantity' });
+                if (product.stock_status === 'Out of Stock') {
+                    return res.status(409).json({ status: false, message: 'Out-of-stock for this item' });
                 }
                 cart.items[itemIndex].quantity += quantity;
             } else {
@@ -105,8 +108,11 @@ const fetchCartItems = async (req, res) => {
 // @access  Private
 const updateItemQuantity = async (req, res) => {
     try {
-        const { product_id, quantity } = req.body;
+        const product_id = req.body?.product_id || req.query?.product_id;
+        const quantity = req.body?.quantity !== undefined ? req.body.quantity : req.query?.quantity;
         const userId = req.user._id;
+
+        console.log(`Update cart request: product_id=${product_id}, quantity=${quantity}`);
 
         if (!product_id || quantity === undefined) {
             return res.status(400).json({ status: false, message: 'product_id and quantity are required' });
@@ -129,7 +135,7 @@ const updateItemQuantity = async (req, res) => {
             const delta = quantity - oldQuantity;
 
             if (quantity > 0) {
-                if (product.stock < quantity) {
+                if (product.stock_status === 'Out of Stock') {
                     return res.status(409).json({ status: false, message: 'Out-of-stock' });
                 }
                 cart.items[itemIndex].quantity = quantity;
@@ -162,8 +168,10 @@ const updateItemQuantity = async (req, res) => {
 // @access  Private
 const deleteItemFromCart = async (req, res) => {
     try {
-        const product_id = req.body.product_id || req.query.product_id;
+        const product_id = req.body?.product_id || req.query?.product_id;
         const userId = req.user._id;
+
+        console.log(`Remove from cart request: product_id=${product_id}`);
 
         if (!product_id) {
             return res.status(400).json({ status: false, message: 'product_id is required' });
