@@ -2,12 +2,16 @@ const categoryService = require('../services/categoryService');
 const productService = require('../services/productService');
 const Order = require('../models/OrderModel');
 const User = require('../models/userModel');
+const Brand = require('../models/BrandModel');
+const Banner = require('../models/BannerModel');
 
 const getHomeData = async (req, res) => {
     try {
         const products = await productService.getAllProducts();
         const orders = await Order.find();
         const totalCustomers = await User.countDocuments({ role: 'user' });
+        const brands = await Brand.find().sort({ createdAt: -1 });
+        const banners = await Banner.find({ isActive: true }).sort({ createdAt: -1 });
 
         const totalOrders = orders.length;
         const pendingOrders = orders.filter(o => o.status === 'Pending').length;
@@ -35,6 +39,8 @@ const getHomeData = async (req, res) => {
             status: true,
             message: "Home data fetched successfully",
             data: {
+                brands: brands,
+                banners: banners,
                 sections: sections,
                 total_carted: totalCarted,
                 total_customers: totalCustomers,

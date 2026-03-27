@@ -14,7 +14,7 @@ const createCategory = async (categoryData) => {
 };
 
 const updateCategory = async (id, updateData) => {
-    return await Category.findOneAndUpdate({ id }, updateData, { new: true, runValidators: true }).select('-__v -_id');
+    return await Category.findOneAndUpdate({ id }, updateData, { returnDocument: 'after', runValidators: true }).select('-__v -_id');
 };
 
 const deleteCategory = async (id) => {

@@ -38,7 +38,7 @@ const bulkCreateProducts = async (productsData) => {
 };
 
 const updateProduct = async (id, updateData) => {
-    return await Product.findOneAndUpdate({ id }, updateData, { new: true, runValidators: true }).select('-__v -_id');
+    return await Product.findOneAndUpdate({ id }, updateData, { returnDocument: 'after', runValidators: true }).select('-__v -_id');
 };
 
 const deleteProduct = async (id) => {

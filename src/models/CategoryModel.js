@@ -33,7 +33,7 @@ categorySchema.pre('save', async function () {
         const counter = await Counter.findOneAndUpdate(
             { id: 'category_id' },
             { $inc: { seq: 1 } },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
         category.id = counter.seq;
     }

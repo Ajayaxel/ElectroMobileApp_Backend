@@ -90,7 +90,7 @@ const updateAddress = async (req, res) => {
         const address = await Address.findOneAndUpdate(
             { id: addressId, user: userId },
             updates,
-            { new: true, runValidators: true }
+            { returnDocument: 'after', runValidators: true }
         );
 
         if (!address) {

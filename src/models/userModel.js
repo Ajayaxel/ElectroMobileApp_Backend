@@ -60,7 +60,7 @@ userSchema.pre('save', async function () {
         const counter = await Counter.findOneAndUpdate(
             { id: 'user_id' },
             { $inc: { seq: 1 } },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
         user.id = counter.seq;
     }

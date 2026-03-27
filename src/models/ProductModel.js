@@ -94,7 +94,7 @@ productSchema.pre('save', async function () {
         const counter = await Counter.findOneAndUpdate(
             { id: 'product_id' },
             { $inc: { seq: 1 } },
-            { new: true, upsert: true }
+            { returnDocument: 'after', upsert: true }
         );
         product.id = counter.seq;
     }
