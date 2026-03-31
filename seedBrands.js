@@ -16,20 +16,32 @@ const connectDB = async () => {
 
 const brands = [
     {
-        name: 'Bosch',
-        image: 'https://logos-world.net/wp-content/uploads/2021/08/Bosch-Logo.png',
+        name: 'Tesla',
+        image: 'https://logos-world.net/wp-content/uploads/2020/10/Tesla-Logo.png',
     },
     {
-        name: 'Varta',
-        image: 'https://logos-world.net/wp-content/uploads/2020/05/Varta-Logo.png',
+        name: 'Amaron',
+        image: 'https://companieslogo.com/img/orig/AMARAJABAT.NS-6a2c9f95.png',
     },
     {
         name: 'Exide',
         image: 'https://logos-world.net/wp-content/uploads/2020/11/Exide-Logo.png',
     },
     {
-        name: 'Amaron',
-        image: 'https://companieslogo.com/img/orig/AMARAJABAT.NS-6a2c9f95.png',
+        name: 'Bosch',
+        image: 'https://logos-world.net/wp-content/uploads/2021/08/Bosch-Logo.png',
+    },
+    {
+        name: 'CATL',
+        image: 'https://logonoid.com/images/catl-logo.png',
+    },
+    {
+        name: 'BYD',
+        image: 'https://logos-world.net/wp-content/uploads/2022/07/BYD-Logo.png',
+    },
+    {
+        name: 'LG Energy',
+        image: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/LG_Energy_Solution_Logo.svg',
     },
 ];
 

@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
 const Counter = require('./CounterModel');
 
-const brandSchema = new mongoose.Schema({
+const vehicleBrandSchema = new mongoose.Schema({
     id: {
         type: Number,
         unique: true,
     },
     name: {
         type: String,
-        required: [true, 'Brand name is required'],
+        required: [true, 'Vehicle Brand name is required'],
         trim: true,
     },
     image: {
         type: String,
-        required: [true, 'Brand image is required'],
+        required: [true, 'Vehicle Brand image is required'],
     },
     status: {
         type: String,
@@ -26,11 +26,11 @@ const brandSchema = new mongoose.Schema({
     },
 });
 
-brandSchema.pre('save', async function () {
+vehicleBrandSchema.pre('save', async function () {
     const brand = this;
     if (brand.isNew) {
         const counter = await Counter.findOneAndUpdate(
-            { id: 'brand_id' },
+            { id: 'vehicle_brand_id' },
             { $inc: { seq: 1 } },
             { returnDocument: 'after', upsert: true }
         );
@@ -38,4 +38,4 @@ brandSchema.pre('save', async function () {
     }
 });
 
-module.exports = mongoose.model('Brand', brandSchema);
+module.exports = mongoose.model('VehicleBrand', vehicleBrandSchema);

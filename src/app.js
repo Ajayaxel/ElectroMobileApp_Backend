@@ -13,11 +13,16 @@ const adminRoutes = require('./routes/adminRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
 const brandRoutes = require('./routes/brandRoutes');
 const bannerRoutes = require('./routes/bannerRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
+const userVehicleRoutes = require('./routes/userVehicleRoutes');
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:3000'],
+    credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,6 +48,8 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/banners', bannerRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/user', userVehicleRoutes);
 
 // Root route
 app.get('/', (req, res) => {
