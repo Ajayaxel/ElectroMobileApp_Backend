@@ -6,9 +6,15 @@ const connectDB = require('./src/config/db');
 
 const PORT = process.env.PORT || 5001;
 
-// Connect to Database
-connectDB();
-
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+// Start server - wait for DB connection first
+(async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+})();
