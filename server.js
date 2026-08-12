@@ -4,7 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 const app = require('./src/app');
 const connectDB = require('./src/config/db');
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 8080;
 
 // Start server - wait for DB connection first
 (async () => {
