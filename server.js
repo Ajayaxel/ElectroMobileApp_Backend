@@ -6,9 +6,9 @@ const connectDB = require('./src/config/db');
 
 const PORT = process.env.PORT || 8080;
 
-// Add global error handlers BEFORE starting server
+// Global error handlers
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.error('Unhandled Rejection:', reason);
 });
 
 process.on('uncaughtException', (error) => {
@@ -16,7 +16,7 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-// Add health check endpoint
+// Health check - ADD BEFORE LISTEN
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
 });
@@ -30,16 +30,12 @@ app.get('/health', (req, res) => {
       console.log(`Health check available at http://localhost:${PORT}/health`);
     });
     
-    // Handle graceful shutdown
     process.on('SIGTERM', () => {
-      console.log('SIGTERM received, shutting down gracefully');
-      server.close(() => {
-        console.log('Server closed');
-        process.exit(0);
-      });
+      console.log('Shutting down gracefully');
+      server.close(() => process.exit(0));
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('Server start failed:', error);
     process.exit(1);
   }
 })();
