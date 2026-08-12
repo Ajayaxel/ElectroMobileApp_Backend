@@ -20,6 +20,12 @@ const vehicleModelSchema = new mongoose.Schema({
         required: [true, 'Vehicle type is required'],
         trim: true,
     },
+    category: {
+        type: String,
+        trim: true,
+        lowercase: true,
+        default: '',
+    },
     image: {
         type: String,
     },
@@ -35,7 +41,7 @@ const vehicleModelSchema = new mongoose.Schema({
 });
 
 // Index for performance
-vehicleModelSchema.index({ brand_id: 1, type: 1 });
+vehicleModelSchema.index({ brand_id: 1, type: 1, category: 1 });
 
 vehicleModelSchema.pre('save', async function () {
     const model = this;

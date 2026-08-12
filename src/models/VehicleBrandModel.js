@@ -15,6 +15,10 @@ const vehicleBrandSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Vehicle Brand image is required'],
     },
+    types: {
+        type: [String],
+        default: [],
+    },
     status: {
         type: String,
         enum: ['active', 'inactive'],

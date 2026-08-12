@@ -20,7 +20,9 @@ const userVehicleSchema = new mongoose.Schema({
     },
     vehicle_type: {
         type: String,
-        enum: ['sedan', 'suv'],
+        enum: ['car', 'bike', 'motorcycle', 'scooter', 'sedan', 'suv'],
+        lowercase: true,
+        trim: true,
         required: [true, 'Vehicle type is required'],
     },
     country: {

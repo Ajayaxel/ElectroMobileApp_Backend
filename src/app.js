@@ -46,8 +46,9 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Simple request logger
+// Simple request logger and Security Headers
 app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
     console.log(`${req.method} ${req.url}`);
     next();
 });

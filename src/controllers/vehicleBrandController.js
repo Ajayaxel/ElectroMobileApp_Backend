@@ -69,6 +69,7 @@ exports.createVehicleBrand = async (req, res) => {
 // @access  Private (Admin)
 exports.updateVehicleBrand = async (req, res) => {
     try {
+        const { name, image, types, status } = req.body;
         let brand = await VehicleBrand.findOne({ id: req.params.id });
         if (!brand) {
             return res.status(404).json({
@@ -76,7 +77,7 @@ exports.updateVehicleBrand = async (req, res) => {
                 message: 'Vehicle Brand not found',
             });
         }
-        brand = await VehicleBrand.findOneAndUpdate({ id: req.params.id }, req.body, {
+        brand = await VehicleBrand.findOneAndUpdate({ id: req.params.id }, { name, image, types, status }, {
             returnDocument: 'after',
             runValidators: true,
         });
